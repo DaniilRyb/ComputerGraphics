@@ -5,7 +5,7 @@ function bresenhamLine(ctx, x0, y0, x1, y1, color) {
 	var eps = 0;
 	var signx = (x1 - x0) / Math.abs(x1 - x0);
 	var signy = (y1 - y0) / Math.abs(y1 - y0);
-	
+
 	if (Math.abs(x1 - x0) > Math.abs(y1 - y0)) {
 
 		while (x !== x1) {
