@@ -66,7 +66,7 @@ function BresenhamCircle(xStart, yStart, raduisCircle) {
 		if (delta < 0) {
 			beta = 2 * (delta + yStart) - 1;
 			if (beta <= 0) {
-				xStart += 1;
+				xStart++;
 				delta = delta + (2 * xStart + 1);
 				continue;
 			}
@@ -74,14 +74,14 @@ function BresenhamCircle(xStart, yStart, raduisCircle) {
 		beta = 2 * (delta - xStart) - 1;
 		if (delta > 0) {
 			if (beta > 0) {
-				yStart -= 1;
+				yStart--;
 				delta = delta + (1 - 2 * yStart);
 				continue;
 			}
 		}
-		xStart += 1;
+		xStart++;
 		delta = delta + (2 * xStart - 2 * yStart);
-		yStart -= 1;
+		yStart--;
 
 
 	}
