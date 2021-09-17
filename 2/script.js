@@ -5,12 +5,10 @@ function bresenhamLine(ctx, x0, y0, x1, y1, color) {
 	var eps = 0;
 	var signx = (x1 - x0) / Math.abs(x1 - x0);
 	var signy = (y1 - y0) / Math.abs(y1 - y0);
-
-	//Math.sqrt((x0 - x1) * (x0 - x1) + (y1 - y1) * (y1 - y1)) * 180 / Math.PI;
-
+	
 	if (Math.abs(x1 - x0) > Math.abs(y1 - y0)) {
 
-		while (x != x1) {
+		while (x !== x1) {
 			eps += +2 * (y1 - y0);
 			if (Math.abs(eps) >= Math.abs(x1 - x0)) {
 				y += signy;
@@ -25,7 +23,7 @@ function bresenhamLine(ctx, x0, y0, x1, y1, color) {
 
 	}
 
-	while (y != y1) {
+	while (y !== y1) {
 		eps = eps + 2 * (x1 - x0);
 		if (Math.abs(eps) >= Math.abs(y1 - y0)) {
 			x += signx;
@@ -42,12 +40,14 @@ function bresenhamLine(ctx, x0, y0, x1, y1, color) {
 
 function AnimationClockFunc(x0, y0, radius) {
 	var angle = ((new Date()).getSeconds() * 6) % 360;
-	var x1 = Math.abs(Math.trunc(x0 + radius * Math.cos(angle * Math.PI / 180)));
-	var y1 = Math.abs(Math.trunc(y0 + radius * Math.sin(angle * Math.PI / 180)));
-	bresenhamLine(ctx, x0, y0, x1, y1, "#000");
+	var x1 = (Math.abs(Math.trunc(x0 + radius * Math.cos(angle * Math.PI / 180))));
+	var y1 = (Math.abs(Math.trunc(y0 + radius * Math.sin(angle * Math.PI / 180))));
+	bresenhamLine(ctx, x0, y0, x1, y1, "#000")
 	setTimeout(function () {
 		bresenhamLine(ctx, x0, y0, x1, y1, "#fff")
 	}, 1000)
+
+
 }
 
 var canvas = document.getElementById('lab02');
@@ -62,5 +62,6 @@ ctx.lineWidth = 5;
 ctx.strokeStyle = "#ff0000";
 ctx.stroke();
 setInterval(function () {
-	AnimationClockFunc(x_start, y_start, radius)
-}, 1000);
+	AnimationClockFunc(x_start, y_start, radius);
+}, 1000)
+
