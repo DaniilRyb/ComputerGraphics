@@ -1,10 +1,10 @@
 function BresenhamLine(ctx, x0, y0, x1, y1, color) {
 	ctx.fillStyle = color;
-	var x = x0;
-	var y = y0;
-	var eps = 0;
-	var signx = (x1 - x0) / Math.abs(x1 - x0);
-	var signy = (y1 - y0) / Math.abs(y1 - y0);
+	let x = x0;
+	let y = y0;
+	let eps = 0;
+	let signx = (x1 - x0) / Math.abs(x1 - x0);
+	let signy = (y1 - y0) / Math.abs(y1 - y0);
 
 	if (Math.abs(x1 - x0) > Math.abs(y1 - y0)) {
 
@@ -39,9 +39,9 @@ function BresenhamLine(ctx, x0, y0, x1, y1, color) {
 }
 
 function AnimationClockFunc(x0, y0, radius) {
-	var angle = ((new Date()).getSeconds() * 6) % 360;
-	var x1 = (Math.abs(Math.trunc(x0 + radius * Math.cos(angle * Math.PI / 180))));
-	var y1 = (Math.abs(Math.trunc(y0 + radius * Math.sin(angle * Math.PI / 180))));
+	let angle = ((new Date()).getSeconds() * 6) % 360;
+	let x1 = (Math.abs(Math.trunc(x0 + radius * Math.cos(angle * Math.PI / 180))));
+	let y1 = (Math.abs(Math.trunc(y0 + radius * Math.sin(angle * Math.PI / 180))));
 	BresenhamLine(ctx, x0, y0, x1, y1, "#000")
 	setTimeout(function () {
 		BresenhamLine(ctx, x0, y0, x1, y1, "#fff")
@@ -99,8 +99,7 @@ function BresenhamCircle(xStart, yStart, raduisCircle) {
 
 var canvas = document.getElementById('sem3');
 var ctx = canvas.getContext('2d');
-let x_start = 220, y_start = 220;
-let R = 200;
+let x_start = 220, y_start = 220, R = 200;
 BresenhamCircle(x_start, y_start, R);
 setInterval(function () {
 	AnimationClockFunc(x_start, y_start, R);
