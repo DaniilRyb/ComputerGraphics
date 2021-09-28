@@ -9,7 +9,7 @@ function BresenhamLine(ctx, x0, y0, x1, y1, color) {
 	if (Math.abs(x1 - x0) > Math.abs(y1 - y0)) {
 
 		while (x !== x1) {
-			eps += +2 * (y1 - y0);
+			eps += 2 * (y1 - y0);
 			if (Math.abs(eps) >= Math.abs(x1 - x0)) {
 				y += signy;
 				eps -= signy * signx * (x1 - x0) * 2;
@@ -24,7 +24,7 @@ function BresenhamLine(ctx, x0, y0, x1, y1, color) {
 	}
 
 	while (y !== y1) {
-		eps = eps + 2 * (x1 - x0);
+		eps += 2 * (x1 - x0);
 		if (Math.abs(eps) >= Math.abs(y1 - y0)) {
 			x += signx;
 			eps = eps - signy * signx * (y1 - y0) * 2;
