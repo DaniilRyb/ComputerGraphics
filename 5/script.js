@@ -1,41 +1,89 @@
-/*function Fx(imgData, x, y, w, h) {
-	var value = 0;
-	var v11 = imgData.data[(x - 1) * 4 + (y - 1) * 4 * w];
-	var v12 = imgData.data[(x - 1) * 4 + y * 4 * w];
-	var v21 = imgData.data[(x - 1) * 4 + (y + 1) * 4 * w];
-	var v22 = imgData.data[(x + 1) * 4 + (y - 1) * 4 * w];
-	var v32 = imgData.data[(x + 1) * 4 + y * 4 * w];
-	var v33 = imgData.data[(x + 1) * 4 + (y + 1) * 4 * w];
-	return v11 + v12 + v21 + v22 + v32 + v33;
+    var canvas = document.getElementById("img1");
+	var ctx = canvas.getContext("2d");
 
-}
+	var canvas2 = document.getElementById("img2");
+	var ctx2 = canvas2.getContext("2d");
 
-var canvas = document.getElementById("sem5");
-var ctx = canvas.getContext("2d");
-var w = 50;
-var h = 50;
-ctx.fillStyle = '#FFF000';
-ctx.fillRect(10, 10, 10, 10);
-var imgData = ctx.getImageData(0, 0, 50, 50);
-console.log(imgData.data[2040], imgData.data[2043]);
-var canvas_s = document.getElementById("sobel");
-var ctx_s = canvas_s.getContext("2d");
-ctx_s.putImageData(imgData, 0, 0);
-var imgData_s = imgData;
-
-for (let i = 0; i < h - 1; i++) {
-	for (let j = 1; j < w - 1; j++) {
-		fx = Fx(imgData, w, h, j, i);
-		fy = 0;
-		f = Math.sqrt(fx * fx + 0);
-		imgData_s[j * 4 + i * w * 4 + 3] = f;
+	function matrixOperation(ourMatrix, defaultMatrix, size) {
+		let res = 0;
+		for (let i = 0; i < size; ++i) {
+			for (let j = 0; j < size; ++j) {
+				res += ourMatrix[i][j] * defaultMatrix[i][j];
+			}
+		}
+		return res;
 	}
-}
-for (let i = 0; i < 10; i++) {
-	imgData_s.data[0 + i * 4 + i * 200] = 255;
-	imgData_s.data[3 + i * 4 + i * 200] = 255;
-}
-imgData_s.data[0] = 255;
-imgData_s.data[3] = 255;
-ctx_s.putImageData(imgData_s, 0, 0);
-*/
+
+	function doubleMatrixOperation(ourMatrix, defaultMatrix1, defaultMatrix2, size) {
+		let a = matrixOperation(ourMatrix, defaultMatrix1, size);
+		let b = matrixOperation(ourMatrix, defaultMatrix2, size);
+		return Math.sqrt(a * a + b * b);
+	}
+
+	function massiveToMatrix(img_data_massive, startIndex) {
+		let matrix = [];
+		for (let i = 0; i < canvas.width; ++i) {
+			matrix[i] = [];
+		}
+		for (let i = 0; i < canvas.height; ++i) {
+			for (let j = 0; j < canvas.width; ++j) {
+				matrix[i][j] = img_data_massive[startIndex + 4 * i * canvas.width + 4 * j];
+			}
+		}
+		return matrix;
+	}
+
+	function matrixCreation(img_data_massive, startIndex, size, x, y) {
+		let matrix = [];
+		for (let i = 0; i < size; ++i) {
+			matrix[i] = [];
+			for (let j = 0; j < size; ++j) {
+				if (x + j > 0 && x + j - 1 < canvas.width && y + i > 0 && y + i - 1 < canvas.height) {
+					matrix[i][j] = img_data_massive[y + i - 1][x + j - 1];
+				} else {
+					matrix[i][j] = 0;
+				}
+			}
+		}
+		return matrix;
+	}
+
+	function Sobel1(img_data, defaultMatrix1, defaultMatrix2, startIndex, newImgData) {
+		let imgMatrix = massiveToMatrix(img_data.data, startIndex);
+		let x = 0;
+		let y = 0;
+		for (let i = startIndex; i < img_data.data.length; i += 4) {
+			let matrix = matrixCreation(imgMatrix, i, 3, x, y);
+			if (x !== canvas.width - 1) {
+				++x;
+			} else {
+				++y;
+				x = 0;
+			}
+			newImgData[i] = doubleMatrixOperation(matrix, defaultMatrix1, defaultMatrix2, 3);
+		}
+	}
+
+	function Sobel(img_data) {
+		let defaultMatrix1 = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]];
+		let defaultMatrix2 = [[-1, -2, -1], [0, 0, 0], [1, 2, 1]];
+		let newImgData = ctx.createImageData(canvas.width, canvas.height);
+		for (let i = 3; i < img_data.data.length; i += 4) {
+			newImgData.data[i] = img_data.data[i];
+		}
+		for (let i = 0; i < 3; ++i) {
+			Sobel1(img_data, defaultMatrix1, defaultMatrix2, i, newImgData.data);
+		}
+		ctx2.putImageData(newImgData, 0, 0);
+	}
+
+
+	let img = new Image;
+	img.crossOrigin = 'Anonymous';
+	img.src = 'http://cdn.iz.ru/sites/default/files/styles/900x506/public/news-2020-10/20201002_gaf_ic10_004.jpg?itok=0la0XY_V';
+	img.onload = function () {
+		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+		let img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		Sobel(img_data);
+	};
+

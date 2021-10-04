@@ -58,8 +58,8 @@ function drawPolygon(x0, y0, R, N) {
 }
 
 let x0 = 220, y0 = 220; // координаты центра выпуклого многоугольника
-let R = 100; // радиус
-let N = 7; // кол-во сторон
+let R = 200; // радиус
+let N = 5; // кол-во сторон
 let ax, ay, bx, by;
 let state = 0;
 let ArrayParametr_t = [];
@@ -81,17 +81,22 @@ canvas.addEventListener("click", function (event) {
 				console.log(" t = " + t);
 			}
 		}
+		let tmax, tmin;
+		for (let i = 0; i < ArrayParametr_t.length; ++i) {
+			if (ArrayParametr_t[i] > ArrayParametr_t[i + 1]) {
+				tmax = ArrayParametr_t[i];
+			}
 
-		var tmax;
-		var tmin;
-
+	else
+		tmin = ArrayParametr_t[i];
+	}
 		console.log("tmax = " + tmax);
 		console.log("tmin = " + tmin);
 		let ex = (bx - ax) * tmin + ax;
 		let ey = (by - ay) * tmin + ay;
 		let ex1 = (bx - ax) * tmax + ax;
 		let ey1 = (by - ay) * tmax + ay;
-		Line(ex, ey, bx, by, "#73ff00");
+		Line(ex, ey, bx, by, "#ff0000");
 		console.log(ex);
 		console.log(ey);
 		console.log(ex1);
