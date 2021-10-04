@@ -1,3 +1,4 @@
+/* СЕКУНДНАЯ СТРЕЛКА НА ОСНОВЕ АЛГОРИТМА БРЕЗЕНХЭМА ДЛЯ ОКРУЖНОСТИ И ОТРЕЗКА */
 function BresenhamLine(ctx, x0, y0, x1, y1, color) {
 	ctx.fillStyle = color;
 	let x = x0;

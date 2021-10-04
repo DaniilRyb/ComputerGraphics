@@ -1,4 +1,5 @@
-    var canvas = document.getElementById("img1");
+/* ФИЛЬТР СОБЕЛЯ */
+var canvas = document.getElementById("img1");
 	var ctx = canvas.getContext("2d");
 
 	var canvas2 = document.getElementById("img2");
