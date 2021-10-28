@@ -1,5 +1,5 @@
 /* ФИЛЬТР СОБЕЛЯ */
-var canvas = document.getElementById("img1");
+    var canvas = document.getElementById("img1");
 	var ctx = canvas.getContext("2d");
 
 	var canvas2 = document.getElementById("img2");
@@ -66,8 +66,12 @@ var canvas = document.getElementById("img1");
 	}
 
 	function Sobel(img_data) {
-		let defaultMatrix1 = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]];
-		let defaultMatrix2 = [[-1, -2, -1], [0, 0, 0], [1, 2, 1]];
+		let defaultMatrix1 = [[-1, 0, 1],
+			                  [-2, 0, 2],
+			                  [-1, 0, 1]];
+		let defaultMatrix2 = [[-1, -2, -1],
+			                    [0, 0, 0],
+			                    [1, 2, 1]];
 		let newImgData = ctx.createImageData(canvas.width, canvas.height);
 		for (let i = 3; i < img_data.data.length; i += 4) {
 			newImgData.data[i] = img_data.data[i];
@@ -87,4 +91,3 @@ var canvas = document.getElementById("img1");
 		let img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		Sobel(img_data);
 	};
-
