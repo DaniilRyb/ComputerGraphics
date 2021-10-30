@@ -37,22 +37,32 @@ function Line(x0, y0, x1, y1, color) {
 	}
 }
 
+let lineSegmentsIntersect = (x1, y1, x2, y2, x3, y3, x4, y4) => {
+	let a_dx = x2 - x1;
+	let a_dy = y2 - y1;
+	let b_dx = x4 - x3;
+	let b_dy = y4 - y3;
+	let s = (-a_dy * (x1 - x3) + a_dx * (y1 - y3)) / (-b_dx * a_dy + a_dx * b_dy);
+	let t = (+b_dx * (y1 - y3) - b_dy * (x1 - x3)) / (-b_dx * a_dy + a_dx * b_dy);
+	return (s >= 0 && s <= 1 && t >= 0 && t <= 1) ? [x1 + t * a_dx, y1 + t * a_dy] : false;
+}
+
+
 let w = canvas.width;
 let h = canvas.height;
 let state = 0;
 let x_start, y_start;
 let x_end, y_end;
-// let pointsVertex = new Map();
-// let pointsOfY = new Set();
+let points_vertex = new Map();
+let dot_map = new Map();
 let x_start_t, y_start_t;
-let coordinateX = [];
-let coordinateY = [];
+
 document.addEventListener("click", function (e) {
 	if (state === 0) {
 		x_start = e.offsetX;
 		x_start_t = x_start;
-		console.log("x_start= " + x_start);
 		y_start = e.offsetY;
+		console.log("x_start= " + x_start);
 		y_start_t = y_start;
 		console.log("y_start= " + y_start);
 		state = 1;
@@ -61,32 +71,61 @@ document.addEventListener("click", function (e) {
 		console.log("x_end= " + x_end);
 		y_end = e.offsetY;
 		console.log("y_end= " + y_end);
-		Line(x_start, y_start, x_end, y_end, "#0051ff");
+		Line(x_start, y_start, x_end, y_end, "#2300ff");
+		points_vertex.set([x_start, y_start], [x_end, y_end]);
 		x_start = e.offsetX;
 		console.log("x_start_new= " + x_start);
 		y_start = e.offsetY;
 		console.log("y_start1_new= " + y_start);
+		state = 1;
 	} else if (state === 2) {
-		let x, y;
-		let imgData = ctx.getImageData(0, 0, w, h);
-		for (let i = imgData.data.length; i >= 0; i -= 4) {
-			if (imgData.data[i + 3] > 0) {
-				x = (i / 4) % w;
-				y = Math.floor((i / 4) / w);
-				coordinateX.push(x);
-				coordinateY.push(y);
+		for (let y = 0; y < w; y++) {
+			let x1 = 0;
+			let y1 = y;
+			let x2 = w;
+			let y2 = y;
+			for (let key of points_vertex.keys()) {
+				let x3 = key[0];
+				let y3 = key[1];
+				let x4 = points_vertex.get(key)[0];
+				let y4 = points_vertex.get(key)[1];
+				if (lineSegmentsIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
+					[a, b] = lineSegmentsIntersect(x1, y1, x2, y2, x3, y3, x4, y4);
+					if (dot_map.has(y)) {
+						dot_map.get(y).push(a);
+						dot_map.get(y).push(b);
+					} else {
+						dot_map.set(y, [a, b]);
+					}
+				}
 			}
 		}
-		for (let i = 0; i < coordinateX.length; i += 1) {
-			Line(coordinateX[i], coordinateY[i], coordinateX[i + 1], coordinateY[i + 1], "#0051ff");
+		for (let y of dot_map.keys()) {
+			for (let i = 0; i < dot_map.get(y).length - 1; i += 4) {
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
 
+			}
 		}
-		state = 3;
+		state = 10;
+
 	}
+
 });
+
+
 document.addEventListener("contextmenu", function (e) {
 	if (state === 1) {
-		Line(x_start, y_start, x_start_t, y_start_t, "#0051ff");
+		Line(x_start, y_start, x_start_t, y_start_t, "#2300ff");
+		points_vertex.set([x_start, y_start], [x_start_t, y_start_t])
+		state = 2;
 	}
-	state = 2;
 });
