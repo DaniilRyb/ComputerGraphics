@@ -116,7 +116,6 @@ canvas.addEventListener("click", function (e) {
 
 });
 
-
 canvas.addEventListener('contextmenu', function (event) {
 	if (state === 1) {
 		Line(xp1_t, yp1_t, xp1, yp1, " #000");
