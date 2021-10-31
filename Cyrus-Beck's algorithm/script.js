@@ -1,6 +1,6 @@
 /* АЛГОРИТМ ОТСЕЧЕНИЯ ОТРЕЗКОВ ВЫПУКЛЫМ МНОГОУГОЛЬНИКОМ */
-var canvas = document.getElementById('sem4');
-var ctx = canvas.getContext('2d');
+let canvas = document.getElementById('sem4');
+let ctx = canvas.getContext('2d');
 
 function Line(x0, y0, x1, y1, color) {
 	ctx.fillStyle = color;
@@ -38,6 +38,95 @@ function Line(x0, y0, x1, y1, color) {
 	}
 }
 
+let state = 0;
+let xp1_t, yp1_t;
+let xp1, yp1;
+let xp2, yp2;
+let xa, ya, xb, yb;
+let points_vertex_polygon = new Map();
+
+
+canvas.addEventListener("click", function (e) {
+	if (state === 0) {
+		xp1_t = e.offsetX;
+		yp1_t = e.offsetY;
+		xp1 = e.offsetX;
+		yp1 = e.offsetY;
+		state = 1;
+	} else if (state === 1) {
+		xp2 = e.offsetX;
+		yp2 = e.offsetY;
+		Line(xp1_t, yp1_t, xp2, yp2, "#000");
+		points_vertex_polygon.set([xp1_t, yp1_t], [xp2, yp2]); // запоминаем координаты ребер
+		xp1_t = e.offsetX;
+		yp1_t = e.offsetY;
+		state = 1;
+	} else if (state === 2) {
+		xa = e.offsetX;
+		ya = e.offsetY;
+		state = 3;
+	} else if (state === 3) {
+		xb = e.offsetX;
+		yb = e.offsetY;
+		let tmin = -1;
+		let tmax = -1;
+		let key_tmin;
+		let key_tmax;
+		Line(xa, ya, xb, yb, "#fff");
+		for (let key of points_vertex_polygon.keys()) {
+			if (tmin === -1) {
+				tmin = ((ya - yb) * (key[0] - xa) + (xb - xa)
+					* (key[1] - ya)) / ((points_vertex_polygon.get(key)[0] - key[0])
+					* (yb - ya) + (points_vertex_polygon.get(key)[1] - key[1]) * (xa - xb));
+				key_tmin = key;
+				if (tmin > 1 || tmin < 0) {
+					tmin = -1;
+				} else {
+					continue;
+				}
+
+			}
+
+			if (tmax === -1) {
+				tmax = ((ya - yb) * (key[0] - xa) + (xb - xa)
+					* (key[1] - ya)) / ((points_vertex_polygon.get(key)[0] - key[0])
+					* (yb - ya) + (points_vertex_polygon.get(key)[1] - key[1]) * (xa - xb));
+				key_tmax = key;
+				if (tmax > 1 || tmax < 0) {
+					tmax = -1;
+					continue;
+				}
+			}
+			if (tmin <= 1 && tmin >= 0 && tmax <= 1 && tmax >= 0) {
+				let x0a = (points_vertex_polygon.get(key_tmin)[0] - key_tmin[0]) * tmin + key_tmin[0];
+				let y0a = (points_vertex_polygon.get(key_tmin)[1] - key_tmin[1]) * tmin + key_tmin[1];
+				let x0b = (points_vertex_polygon.get(key_tmax)[0] - key_tmax[0]) * tmax + key_tmax[0];
+				let y0b = (points_vertex_polygon.get(key_tmax)[1] - key_tmax[1]) * tmax + key_tmax[1];
+
+				Line(x0a, y0a, x0b, y0b, "#1bff00");
+				Line(points_vertex_polygon.get(key_tmin)[0],
+					points_vertex_polygon.get(key_tmin)[1], key_tmin[0], key_tmin[1], "#000");
+				break;
+			}
+		}
+		state = 2;
+
+	}
+
+
+});
+
+
+canvas.addEventListener('contextmenu', function (event) {
+	if (state === 1) {
+		Line(xp1_t, yp1_t, xp1, yp1, " #000");
+		points_vertex_polygon.set([xp1_t, yp1_t], [xp1, yp1]);
+		state = 2;
+	}
+});
+
+
+/*
 const ArrX = [];
 const ArrY = [];
 
@@ -110,4 +199,4 @@ canvas.addEventListener("click", function (event) {
 
 });
 // Введите координату центра, радиус и кол-во сторон выпуклого многоугольника
-drawPolygon(x0, y0, R, N);
+drawPolygon(x0, y0, R, N); */
