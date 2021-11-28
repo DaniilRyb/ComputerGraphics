@@ -41,7 +41,7 @@ function M(a) {
 	let Matrix = [Math.cos(a), 0, Math.sin(a), 0,
 		0, 1, 0, 0,
 		-Math.sin(a), 0, Math.cos(a), 0,
-		0, 0, 0, 1]; // поворот вокруг оси Oy
+		0, 0, 0, 1]; // вращение вокруг оси Oy
 	return Matrix;
 }
 
@@ -55,7 +55,7 @@ function MV_mult_3d(M, v) { // умножение матрицы на векто
 	let resultVector = [0, 0, 0, 0];
 	for (let i = 0; i < 4; i++) {
 		for (let j = 0; j < 4; j++) {
-			resultVector[i] += +M[i * 4 + j] * v[j];
+			resultVector[i] += M[i * 4 + j] * v[j];
 		}
 	}
 	return resultVector;
@@ -65,10 +65,7 @@ let state = 0;
 let Px0, Py0; // координата точки P0
 let Px1, Py1; // координата точки P1
 let Px2, Py2; // координата точки P2
-let pointsArrX = [];
-let pointsArrY = [];
-let pointsArrX_ = [];
-let pointsArrY_ = [];
+let pointsArrX = [], pointsArrY = [];
 canvas.addEventListener("click", function (e) {
 	if (state === 0) {
 		Px0 = e.offsetX;
@@ -110,8 +107,6 @@ canvas.addEventListener("click", function (e) {
 			for (t = 0.5; t > 0.01; t /= 2) {
 				let P00x = (1 - t) * (1 - t) * P0x + 2 * (1 - t) * t * P1x + t * t * P2x;
 				let P00y = (1 - t) * (1 - t) * P0y + 2 * (1 - t) * t * P1y + t * t * P2y;
-				pointsArrX.push(P00x);
-				pointsArrY.push(P00y);
 				P2x = P00x;
 				P2y = P00y;
 				P1x = (1 - t) * P0x + t * P1x;
@@ -121,26 +116,26 @@ canvas.addEventListener("click", function (e) {
 		while (CheckPointsIsValid(P0x_, P0y_, P1x_, P1y_, P2x_, P2y_) >= 1) {
 			let P00x_ = (1 - t) * (1 - t) * P0x_ + 2 * (1 - t) * t * P1x_ + t * t * P2x_;
 			let P00y_ = (1 - t) * (1 - t) * P0y_ + 2 * (1 - t) * t * P1y_ + t * t * P2y_;
-			pointsArrX_.push(P00x_);
-			pointsArrY_.push(P00y_);
+			pointsArrX.push(P00x_);
+			pointsArrY.push(P00y_);
 			P1x_ = (1 - t) * P1x_ + t * P2x_;
 			P1y_ = (1 - t) * P1y_ + t * P2y_;
 			P0x_ = P00x_;
 			P0y_ = P00y_;
 		}
-		for (let i = 0; i < pointsArrX_.length; ++i) {
-			for (let alpha = 0; alpha <= 360; alpha += 1) {
-				let v1 = [pointsArrX_[i], pointsArrY_[i], 0, 1];
-				let v2 = [pointsArrX_[i + 1], pointsArrY_[i + 1], 0, 1];
-				let r1 = MV_mult_3d(M(alpha), v1);
-				let shift_res1 = MV_mult_3d(ShiftX, r1);
-				let r2 = MV_mult_3d(M(alpha), v2);
-				let shift_res2 = MV_mult_3d(ShiftX, r2);
-				let x1 = shift_res1[0];
-				let y1 = shift_res1[1];
-				let x2 = shift_res2[0];
-				let y2 = shift_res2[1];
-				Line(x1, y1, x2, y2, "#ef0000");
+		for (let i = 0; i < pointsArrX.length; i++) {
+			for (let alphaRotate = 0; alphaRotate <= 360; alphaRotate += 1) {
+				let v1 = [pointsArrX[i], pointsArrY[i], 0, 1];
+				let v2 = [pointsArrX[i + 1], pointsArrY[i + 1], 0, 1];
+				let r1 = MV_mult_3d(M(alphaRotate), v1);
+				let shift_r1 = MV_mult_3d(ShiftX, r1);
+				let r2 = MV_mult_3d(M(alphaRotate), v2);
+				let shift_r2 = MV_mult_3d(ShiftX, r2);
+				let x0 = shift_r1[0];
+				let y0 = shift_r1[1];
+				let x1 = shift_r2[0];
+				let y1 = shift_r2[1];
+				Line(x0, y0, x1, y1, "#ff9900");
 
 			}
 		}
