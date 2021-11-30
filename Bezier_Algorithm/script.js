@@ -111,7 +111,6 @@ canvas.addEventListener("click", function (e) {
 			P1y_ = (1 - t) * P1y_ + t * P2y_;
 			P0x_ = P00x_;
 			P0y_ = P00y_;
-
 		}
 		for (let i = 0; i < pointsArrX_.length; i+=1) {
 			Line(pointsArrX_[i], pointsArrY_[i], pointsArrX_[i + 1], pointsArrY_[i + 1], "#ff0000");
