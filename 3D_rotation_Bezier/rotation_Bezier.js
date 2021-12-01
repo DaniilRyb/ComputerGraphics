@@ -38,17 +38,25 @@ function Line(x0, y0, x1, y1, color) {
 }
 
 function M(a) {
-	let Matrix = [Math.cos(a), 0, Math.sin(a), 0,
+	/*let Matrix = [Math.cos(a), 0, Math.sin(a), 0,
 		0, 1, 0, 0,
 		-Math.sin(a), 0, Math.cos(a), 0,
-		0, 0, 0, 1]; // вращение вокруг оси Oy
+		0, 0, 0, 1]; // вращение вокруг оси Oy */
+	let Matrix = [Math.cos(a), -Math.sin(a), 0, 0,
+		Math.sin(a), Math.cos(a), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1]; // вращение вокруг оси Oz
 	return Matrix;
 }
 
-let dx = 500;
-let ShiftX = [1, 0, 0, dx,
-	0, 1, 0, 0,
-	0, 0, 1, 0,
+let scale = [0.5, 0, 0, 0,
+	0, 0.5, 0, 0,
+	0, 0, 0.5, 0,
+	0, 0, 0, 1];
+
+let shiftMatrix = [1, 0, 0, canvas.width / 2,
+	0, 1, 0, canvas.height / 2,
+	0, 0, 1, 1,
 	0, 0, 0, 1];
 
 function MV_mult_3d(M, v) { // умножение матрицы на вектор
@@ -127,14 +135,17 @@ canvas.addEventListener("click", function (e) {
 			for (let alphaRotate = 0; alphaRotate <= 360; alphaRotate += 1) {
 				let v1 = [pointsArrX[i], pointsArrY[i], 0, 1];
 				let v2 = [pointsArrX[i + 1], pointsArrY[i + 1], 0, 1];
+
 				let r1 = MV_mult_3d(M(alphaRotate), v1);
-				let shift_r1 = MV_mult_3d(ShiftX, r1);
+				let scale_r1 = MV_mult_3d(scale, r1);
+				let scaleAndShift_r1 = MV_mult_3d(shiftMatrix, scale_r1);
 				let r2 = MV_mult_3d(M(alphaRotate), v2);
-				let shift_r2 = MV_mult_3d(ShiftX, r2);
-				let x0 = shift_r1[0];
-				let y0 = shift_r1[1];
-				let x1 = shift_r2[0];
-				let y1 = shift_r2[1];
+				let scale_r2 = MV_mult_3d(scale, r2);
+				let scaleAndShift_r2 = MV_mult_3d(shiftMatrix, scale_r2);
+				let x0 = scaleAndShift_r1[0];
+				let y0 = scaleAndShift_r1[1];
+				let x1 = scaleAndShift_r2[0];
+				let y1 = scaleAndShift_r2[1];
 				Line(x0, y0, x1, y1, "#ff9900");
 
 			}
