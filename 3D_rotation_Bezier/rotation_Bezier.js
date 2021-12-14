@@ -1,4 +1,135 @@
-let canvas = document.getElementById('transform');
+function Line(x0, y0, x1, y1, color) {
+	ctx.fillStyle = color;
+	let dy = Math.abs(y1 - y0);
+	let dx = Math.abs(x1 - x0);
+	let dmax = Math.max(dx, dy);
+	let dmin = Math.min(dx, dy);
+	let xdir = 1;
+	if (x1 < x0) xdir = -1;
+	let ydir = 1;
+	if (y1 < y0) ydir = -1;
+	let eps = 0;
+	let s = 1;
+	let k = 2 * dmin;
+	if (dy <= dx) {
+		let y = y0;
+		for (let x = x0; x * xdir <= x1 * xdir; x += xdir) {
+			ctx.fillRect(x * s, y * s, s, s);
+			eps = eps + k;
+			if (eps > dmax) {
+				y += ydir;
+				eps = eps - 2 * dmax;
+			}
+		}
+	} else {
+		let x = x0;
+		for (let y = y0; y * ydir <= y1 * ydir; y += ydir) {
+			ctx.fillRect(x * s, y * s, s, s);
+			eps = eps + k;
+			if (eps > dmax) {
+				x += xdir;
+				eps = eps - 2 * dmax;
+			}
+		}
+	}
+}
+
+let canvas = document.getElementById('Bezie3D');
+let ctx = canvas.getContext('2d');
+let dim = 3;
+
+function M(alpha) {
+	let M = [
+		Math.cos(alpha * Math.PI / 180), 0, -1 * Math.sin(alpha * Math.PI / 180), 0,
+		0, 1, 0, 0,
+		Math.sin(alpha * Math.PI / 180), 0, Math.cos(alpha * Math.PI / 180), 0,
+		0, 0, 0, 1];
+	return M;
+}
+
+function Mx(alpha) {
+	let M = [1, 0, 0, 0,
+		0, Math.cos(alpha), -Math.sin(alpha), 0,
+		0, Math.sin(alpha), Math.cos(alpha), 0,
+		0, 0, 0, 1];
+	return M;
+}
+
+function MV_mul(M, v) {
+	let res = [];
+	for (let i = 0; i < dim + 1; i++) {
+		let aij = 0;
+		for (let j = 0; j < dim + 1; j++) {
+			aij += M[i * (dim + 1) + j] * v[j];
+		}
+		res.push(aij);
+	}
+	return res;
+}
+
+let shift3D = [1, 0, 0, canvas.width / 2,
+	0, 1, 0, canvas.height / 2,
+	0, 0, 1, 1,
+	0, 0, 0, 1];
+
+function distance(P0, P1, P2) {
+	let k = (P2.y - P0.y) / (P2.x - P0.x);
+	let n = {x: -k, y: 1};
+	let b = P0.y - k * P0.x;
+	let d = Math.abs(n.x * P1.x + P1.y - b) / Math.sqrt(k * k + 1);
+	return d;
+}
+
+function Bezie(P0, P1, P2) {
+	let v = [];
+	let v_tmp = [];
+	if (distance(P0, P1, P2) >= 1) {
+		let P0_ = {x: 0.5 * (P0.x + P1.x), y: 0.5 * (P0.y + P1.y), z: 0};
+		let P1_ = {x: 0.5 * (P2.x + P1.x), y: 0.5 * (P2.y + P1.y), z: 0};
+		let P0__ = {x: 0.5 * (P0_.x + P1_.x), y: 0.5 * (P0_.y + P1_.y), z: 0};
+		v_tmp = Bezie(P0, P0_, P0__);
+		for (let i = 0; i < v_tmp.length; i++) {
+			v.push(v_tmp[i]);
+		}
+		v_tmp = Bezie(P0__, P1_, P2);
+		for (let i = 0; i < v_tmp.length; i++) {
+			v.push(v_tmp[i]);
+		}
+		return v;
+	} else {
+		Line(P0.x, P0.y, P2.x, P2.y, "#ffffff");
+		return [P0, P2];
+	}
+}
+
+let P0 = {x: 400, y: 10, z: 0};
+let P1 = {x: 10, y: 100, z: 0};
+let P2 = {x: 500, y: 300, z: 0};
+let v = Bezie(P0, P1, P2);
+let prev = [];
+
+for (let i = 0; i < v.length; i++) {
+	for (let alpha = 0; alpha <= 360; alpha += 0.1) {
+		let ret = MV_mul(Mx(alpha), [v[i].x, v[i].y, v[i].z, 1]);
+		//let ret_center = MV_mul(shift3D,[ret[0], ret[1], 0, 1]);
+		//ctx.fillRect(ret[0], ret[1], 1, 1);
+		ctx.fillStyle = "#000";
+		//ctx.fillRect(ret_center[0], ret_center[1], 1, 1);
+		let ret_ = MV_mul(M(120), ret);
+		let ret_center = MV_mul(shift3D, [ret_[0], ret_[1], 0, 1]);
+		ctx.fillRect(ret_center[0], ret_center[1], 1, 1);
+		//Line(ret_center[0], ret_center[1], prev[0], prev[1], "#000");
+		prev[0] = ret_center[0];
+		prev[1] = ret_center[1];
+	}
+}
+
+
+
+
+
+
+/*let canvas = document.getElementById('transform');
 let ctx = canvas.getContext('2d');
 
 function Line(x0, y0, x1, y1, color) {
@@ -38,14 +169,10 @@ function Line(x0, y0, x1, y1, color) {
 }
 
 function M(a) {
-	/*let Matrix = [Math.cos(a), 0, Math.sin(a), 0,
-		0, 1, 0, 0,
-		-Math.sin(a), 0, Math.cos(a), 0,
-		0, 0, 0, 1]; // вращение вокруг оси Oy */
 	let Matrix = [Math.cos(a), -Math.sin(a), 0, 0,
 		Math.sin(a), Math.cos(a), 0, 0,
 		0, 0, 1, 0,
-		0, 0, 0, 1]; // вращение вокруг оси Oz
+		0, 0, 0, 1];
 	return Matrix;
 }
 
@@ -153,3 +280,4 @@ canvas.addEventListener("click", function (e) {
 		state = 3;
 	}
 });
+*/
