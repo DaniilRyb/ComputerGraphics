@@ -37,26 +37,6 @@ function Line(x0, y0, x1, y1, color) {
 	}
 }
 
-function My(alpha) {
-	let My = [Math.sin(alpha), 0, Math.cos(alpha), 0,
-			   0, 1, 0, 0,
-		0, Math.sin(alpha), Math.cos(alpha), 0,
-	    0, 0, 0, 1];
-	return My;
-}
-
-function MV_mul(M, v) {
-	let res = [];
-	for (let i = 0; i < 4; i++) {
-		let aij = 0;
-		for (let j = 0; j < 3; j++) {
-			aij += M[i * 4 + j] * v[j];
-		}
-		res.push(aij);
-	}
-	return res;
-}
-
 function readFile(input) {
 	let reader = new FileReader();
 	let file = input.files[0];
@@ -69,30 +49,40 @@ function readFile(input) {
 				let c1 = line.match(/[0-9]+\.+[0-9]/g);
 				let x = c1[0].match(/[0-9]+\.+[0-9]/);
 				let y = c1[1].match(/[0-9]+\.+[0-9]/);
-				let x_c = Number(x);
-				let y_c = Number(y);
-				//ctx.fillRect(x_c, y_c, 1, 1);
-				//console.log(x,y);
-				vertices.push({x: x_c, y: y_c});
-
+				let x_ = Number(x);
+				let y_ = Number(y);
+				console.log(x_, y_);
+				vertices.push({x: x_, y: y_});
 			}
 
 		}
-		let rotate_vertice_arr = [];
-		for (let i = 0; i < vertices.length; i += 1) {
-			let new_vertices = MV_mul(My(70), [vertices[i].x, vertices[i].y, 0, 1]);
-			console.log(Math.round(new_vertices[0]), new_vertices[1]);
-			ctx.fillRect(new_vertices[0], new_vertices[1], 2, 2);
-			rotate_vertice_arr.push({x: new_vertices[0], y: new_vertices[1]});
-		}
-		//for (let i = 0; i < rotate_vertice_arr.length; i += 1) {
-		//	Line(rotate_vertice_arr[i].x, rotate_vertice_arr[i].y,
-		//		rotate_vertice_arr[i + 1].x, rotate_vertice_arr[i + 1].y, "#2400ff");
-		//}
+		Line(vertices[0].x, vertices[0].y,
+			vertices[1].x, vertices[1].y, "#000");
+		Line(vertices[1].x, vertices[1].y,
+			vertices[3].x, vertices[3].y, "#000");
+		Line(vertices[3].x, vertices[3].y,
+			vertices[2].x, vertices[2].y, "#000");
+		Line(vertices[2].x, vertices[2].y,
+			vertices[0].x, vertices[0].y, "#000");
+		Line(vertices[0].x, vertices[0].y,
+			vertices[4].x, vertices[4].y, "#000");
+		Line(vertices[1].x, vertices[1].y,
+			vertices[5].x, vertices[5].y, "#000");
+		Line(vertices[2].x, vertices[2].y,
+			vertices[6].x, vertices[6].y, "#000");
+		Line(vertices[3].x, vertices[3].y,
+			vertices[7].x, vertices[7].y, "#000");
+		Line(vertices[5].x, vertices[5].y,
+			vertices[4].x, vertices[4].y, "#000");
+		Line(vertices[7].x, vertices[7].y,
+			vertices[6].x, vertices[6].y, "#000");
+		Line(vertices[6].x, vertices[6].y,
+			vertices[4].x, vertices[4].y, "#000");
+		Line(vertices[7].x, vertices[7].y,
+			vertices[5].x, vertices[5].y, "#000");
+
 	});
 
 
 	reader.readAsText(file);
 }
-
-
