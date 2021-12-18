@@ -102,17 +102,9 @@ document.addEventListener("click", function (e) {
 		}
 		for (let y of dot_map.keys()) {
 			for (let i = 0; i < dot_map.get(y).length - 1; i += 4) {
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-				Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
-
+				for (let j = 0; j < 10; j++) {
+					Line(dot_map.get(y)[i], y, dot_map.get(y)[i + 2], dot_map.get(y)[i + 3], "#2300ff");
+				}
 			}
 		}
 		state = 10;

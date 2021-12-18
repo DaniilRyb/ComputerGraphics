@@ -38,21 +38,21 @@ let canvas = document.getElementById('Bezie3D');
 let ctx = canvas.getContext('2d');
 let dim = 3;
 
-function M(alpha) {
-	let M = [
+function My(alpha) {
+	let My = [
 		Math.cos(alpha * Math.PI / 180), 0, -1 * Math.sin(alpha * Math.PI / 180), 0,
 		0, 1, 0, 0,
 		Math.sin(alpha * Math.PI / 180), 0, Math.cos(alpha * Math.PI / 180), 0,
 		0, 0, 0, 1];
-	return M;
+	return My;
 }
 
 function Mx(alpha) {
-	let M = [1, 0, 0, 0,
+	let Mx = [1, 0, 0, 0,
 		0, Math.cos(alpha), -Math.sin(alpha), 0,
 		0, Math.sin(alpha), Math.cos(alpha), 0,
 		0, 0, 0, 1];
-	return M;
+	return Mx;
 }
 
 function MV_mul(M, v) {
@@ -67,7 +67,7 @@ function MV_mul(M, v) {
 	return res;
 }
 
-let shift3D = [1, 0, 0, canvas.width / 2,
+let shift = [1, 0, 0, canvas.width / 2,
 	0, 1, 0, canvas.height / 2,
 	0, 0, 1, 1,
 	0, 0, 0, 1];
@@ -102,31 +102,23 @@ function Bezie(P0, P1, P2) {
 	}
 }
 
-let P0 = {x: 400, y: 10, z: 0};
-let P1 = {x: 10, y: 100, z: 0};
-let P2 = {x: 500, y: 300, z: 0};
+let P0 = {x: 300, y: 10, z: 0};
+let P1 = {x: 10, y: 50, z: 0};
+let P2 = {x: 400, y: 200, z: 0};
 let v = Bezie(P0, P1, P2);
 let prev = [];
 
 for (let i = 0; i < v.length; i++) {
 	for (let alpha = 0; alpha <= 360; alpha += 0.1) {
 		let ret = MV_mul(Mx(alpha), [v[i].x, v[i].y, v[i].z, 1]);
-		//let ret_center = MV_mul(shift3D,[ret[0], ret[1], 0, 1]);
-		//ctx.fillRect(ret[0], ret[1], 1, 1);
-		ctx.fillStyle = "#000";
-		//ctx.fillRect(ret_center[0], ret_center[1], 1, 1);
-		let ret_ = MV_mul(M(120), ret);
-		let ret_center = MV_mul(shift3D, [ret_[0], ret_[1], 0, 1]);
+		ctx.fillStyle = "#2300ff";
+		let ret_ = MV_mul(My(110), ret);
+		let ret_center = MV_mul(shift, [ret_[0], ret_[1], 0, 1]);
 		ctx.fillRect(ret_center[0], ret_center[1], 1, 1);
-		//Line(ret_center[0], ret_center[1], prev[0], prev[1], "#000");
 		prev[0] = ret_center[0];
 		prev[1] = ret_center[1];
 	}
 }
-
-
-
-
 
 
 /*let canvas = document.getElementById('transform');
