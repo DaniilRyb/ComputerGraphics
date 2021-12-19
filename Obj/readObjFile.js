@@ -56,33 +56,26 @@ function readFile(input) {
 			}
 
 		}
+		ctx.fillStyle = "#33ffaa";
+		ctx.beginPath();
+		ctx.moveTo(vertices[0].x, vertices[0].y);
+		ctx.lineTo(vertices[1].x, vertices[1].y);
+		ctx.lineTo(vertices[3].x, vertices[3].y);
+		ctx.lineTo(vertices[2].x, vertices[2].y);
+		ctx.lineTo(vertices[0].x, vertices[0].y);
+		ctx.fill();
 		Line(vertices[0].x, vertices[0].y,
 			vertices[1].x, vertices[1].y, "#000");
 		Line(vertices[1].x, vertices[1].y,
 			vertices[3].x, vertices[3].y, "#000");
-		Line(vertices[3].x, vertices[3].y,
-			vertices[2].x, vertices[2].y, "#000");
 		Line(vertices[2].x, vertices[2].y,
 			vertices[0].x, vertices[0].y, "#000");
 		Line(vertices[0].x, vertices[0].y,
-			vertices[4].x, vertices[4].y, "#000");
-		Line(vertices[1].x, vertices[1].y,
-			vertices[5].x, vertices[5].y, "#000");
+			vertices[3].x, vertices[3].y, "#000");
 		Line(vertices[2].x, vertices[2].y,
-			vertices[6].x, vertices[6].y, "#000");
-		Line(vertices[3].x, vertices[3].y,
-			vertices[7].x, vertices[7].y, "#000");
-		Line(vertices[5].x, vertices[5].y,
-			vertices[4].x, vertices[4].y, "#000");
-		Line(vertices[7].x, vertices[7].y,
-			vertices[6].x, vertices[6].y, "#000");
-		Line(vertices[6].x, vertices[6].y,
-			vertices[4].x, vertices[4].y, "#000");
-		Line(vertices[7].x, vertices[7].y,
-			vertices[5].x, vertices[5].y, "#000");
-
+			vertices[1].x, vertices[1].y, "#000");
+		Line(vertices[2].x, vertices[2].y,
+			vertices[3].x, vertices[3].y, "#000");
 	});
-
-
 	reader.readAsText(file);
 }
